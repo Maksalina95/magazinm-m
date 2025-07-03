@@ -1,0 +1,73 @@
+<!DOCTYPE html><html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Магазин Максалины</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Меню слева (для десктопа) -->
+    <aside>
+      <h2>Меню</h2>
+      <a href="#" onclick="switchTab('searchTab')">🔍 Поиск</a>
+      <a href="#" onclick="switchTab('categoriesTab')">📦 Категории</a>
+      <a href="#" onclick="switchTab('menuTab')">☰ Меню</a>
+      <a href="favorites.html">❤ Избранное</a>
+      <a href="contacts.html">📞 Контакты</a>
+      <a href="delivery.html">🚚 Доставка</a>
+      <a href="rules.html">📜 Правила</a>
+      <a href="reviews.html">⭐ Отзывы</a>
+    </aside><!-- Основной контент -->
+<main>
+  <!-- Вкладка 1: Поиск + Товары -->
+  <section id="searchTab" class="tab active">
+    <div class="slider-container">
+      <img class="slide active" src="images/reklama1.jpg" alt="Реклама 1">
+      <img class="slide" src="images/reklama2.jpg" alt="Реклама 2">
+      <div class="dots">
+        <span class="dot active" onclick="showSlide(0)"></span>
+        <span class="dot" onclick="showSlide(1)"></span>
+      </div>
+    </div>
+
+    <div class="filters">
+      <input type="text" id="searchInput" placeholder="Поиск по названию" oninput="applyFilters()">
+      <select id="categoryFilter" onchange="applyFilters()"></select>
+      <select id="subcategoryFilter" onchange="applyFilters()"></select>
+      <div class="price-range">
+        <label>Цена от:</label>
+        <input type="number" id="priceFrom" onchange="applyFilters()">
+        <label>до</label>
+        <input type="number" id="priceTo" onchange="applyFilters()">
+      </div>
+    </div>
+
+    <div id="productList" class="product-grid"></div>
+  </section>
+
+  <!-- Вкладка 2: Категории -->
+  <section id="categoriesTab" class="tab">
+    <h2>Категории товаров</h2>
+    <div id="category-gallery"></div>
+  </section>
+
+  <!-- Вкладка 3: Меню -->
+  <section id="menuTab" class="tab">
+    <h2>Разделы</h2>
+    <ul>
+      <li><a href="favorites.html">❤ Избранное</a></li>
+      <li><a href="contacts.html">📞 Контакты</a></li>
+      <li><a href="delivery.html">🚚 Доставка</a></li>
+      <li><a href="rules.html">📜 Правила</a></li>
+      <li><a href="reviews.html">⭐ Отзывы</a></li>
+    </ul>
+  </section>
+</main>
+
+  </div>  <!-- Нижнее меню (для мобильной версии) -->  <nav class="bottom-nav">
+    <button onclick="switchTab('searchTab')">🔍</button>
+    <button onclick="switchTab('categoriesTab')">📦</button>
+    <button onclick="switchTab('menuTab')">☰</button>
+  </nav>  <script src="app.js"></script></body>
+</html>
