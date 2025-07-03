@@ -1,73 +1,267 @@
-<!DOCTYPE html><html lang="ru">
+<!DOCTYPE html>
+<html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Магазин Максалины</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* === Общие стили и твой стиль из предыдущего сообщения === */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7e9e9;
+      color: #5a2e2e;
+      margin: 0;
+      padding: 0;
+      position: relative;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    body::after {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-image: url('images/fon.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      opacity: 0.1;
+      z-index: -1;
+      pointer-events: none;
+    }
+    /* Контейнер под меню и контент */
+    .container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Боковое меню (для десктопа) */
+    aside {
+      width: 220px;
+      background: #fff0f0;
+      padding: 20px;
+      box-shadow: 2px 0 6px rgba(0,0,0,0.1);
+      flex-shrink: 0;
+      box-sizing: border-box;
+    }
+    aside h2 {
+      font-size: 18px;
+      margin-top: 0;
+      color: #a63b3b;
+    }
+    aside a {
+      display: block;
+      margin: 10px 0;
+      color: #a63b3b;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 8px;
+      border-radius: 6px;
+      word-break: break-word;
+    }
+    aside a:hover, aside a.active {
+      background-color: #ffdede;
+    }
+
+    /* Основной контент */
+    main {
+      flex: 1;
+      padding: 20px;
+      background: #fff;
+      min-width: 0;
+      overflow-wrap: break-word;
+      position: relative;
+    }
+
+    /* Вкладки — скрываем по умолчанию */
+    .tab {
+      display: none;
+    }
+    .tab.active {
+      display: block;
+    }
+
+    /* Нижнее меню (tab bar) для мобильных */
+    .tabbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 56px;
+      background: #fff0f0;
+      border-top: 1px solid #a63b3b;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
+      z-index: 1000;
+      display: none; /* скрыто для десктопа */
+    }
+    .tabbar button {
+      background: none;
+      border: none;
+      color: #a63b3b;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      padding: 6px 0;
+    }
+    .tabbar button.active {
+      color: #ff5e5e;
+      font-weight: bold;
+    }
+    .tabbar button svg {
+      width: 24px;
+      height: 24px;
+      margin-bottom: 2px;
+      fill: currentColor;
+    }
+
+    /* Скрыть боковое меню и показать таббар на мобилках */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        padding-bottom: 56px; /* место под таббар */
+      }
+      aside {
+        display: none;
+      }
+      .tabbar {
+        display: flex;
+      }
+      main {
+        padding: 10px 15px 20px 15px;
+      }
+    }
+
+  </style>
 </head>
 <body>
   <div class="container">
-    <!-- Меню слева (для десктопа) -->
+    <!-- Боковое меню для десктопа -->
     <aside>
       <h2>Меню</h2>
-      <a href="#" onclick="switchTab('searchTab')">🔍 Поиск</a>
-      <a href="#" onclick="switchTab('categoriesTab')">📦 Категории</a>
-      <a href="#" onclick="switchTab('menuTab')">☰ Меню</a>
-      <a href="favorites.html">❤ Избранное</a>
-      <a href="contacts.html">📞 Контакты</a>
-      <a href="delivery.html">🚚 Доставка</a>
-      <a href="rules.html">📜 Правила</a>
-      <a href="reviews.html">⭐ Отзывы</a>
-    </aside><!-- Основной контент -->
-<main>
-  <!-- Вкладка 1: Поиск + Товары -->
-  <section id="searchTab" class="tab active">
-    <div class="slider-container">
-      <img class="slide active" src="images/reklama1.jpg" alt="Реклама 1">
-      <img class="slide" src="images/reklama2.jpg" alt="Реклама 2">
-      <div class="dots">
-        <span class="dot active" onclick="showSlide(0)"></span>
-        <span class="dot" onclick="showSlide(1)"></span>
-      </div>
-    </div>
+      <a href="#" class="menu-link active" data-tab="search">🔍 Поиск и товары</a>
+      <a href="#" class="menu-link" data-tab="categories">📦 Категории</a>
+      <a href="#" class="menu-link" data-tab="menu">☰ Меню</a>
+    </aside>
 
-    <div class="filters">
-      <input type="text" id="searchInput" placeholder="Поиск по названию" oninput="applyFilters()">
-      <select id="categoryFilter" onchange="applyFilters()"></select>
-      <select id="subcategoryFilter" onchange="applyFilters()"></select>
-      <div class="price-range">
-        <label>Цена от:</label>
-        <input type="number" id="priceFrom" onchange="applyFilters()">
-        <label>до</label>
-        <input type="number" id="priceTo" onchange="applyFilters()">
-      </div>
-    </div>
+    <main>
+      <!-- Вкладка 1: Поиск и товары -->
+      <section id="search" class="tab active">
+        <div class="slider-container">
+          <img src="images/reklama1.jpg" class="slide active" alt="Реклама 1" />
+          <img src="images/reklama2.jpg" class="slide" alt="Реклама 2" />
+        </div>
+        <div class="dots">
+          <span class="dot active" data-index="0"></span>
+          <span class="dot" data-index="1"></span>
+        </div>
 
-    <div id="productList" class="product-grid"></div>
-  </section>
+        <div class="filters">
+          <input type="text" id="searchInput" placeholder="🔍 Поиск по названию..." list="autocompleteList" />
+          <datalist id="autocompleteList"></datalist>
+        </div>
 
-  <!-- Вкладка 2: Категории -->
-  <section id="categoriesTab" class="tab">
-    <h2>Категории товаров</h2>
-    <div id="category-gallery"></div>
-  </section>
+        <div id="filters" style="display:none;">
+          <!-- Тут можно добавить фильтры по категориям и цене -->
+        </div>
 
-  <!-- Вкладка 3: Меню -->
-  <section id="menuTab" class="tab">
-    <h2>Разделы</h2>
-    <ul>
-      <li><a href="favorites.html">❤ Избранное</a></li>
-      <li><a href="contacts.html">📞 Контакты</a></li>
-      <li><a href="delivery.html">🚚 Доставка</a></li>
-      <li><a href="rules.html">📜 Правила</a></li>
-      <li><a href="reviews.html">⭐ Отзывы</a></li>
-    </ul>
-  </section>
-</main>
+        <div id="product-list" class="product-list"></div>
+      </section>
 
-  </div>  <!-- Нижнее меню (для мобильной версии) -->  <nav class="bottom-nav">
-    <button onclick="switchTab('searchTab')">🔍</button>
-    <button onclick="switchTab('categoriesTab')">📦</button>
-    <button onclick="switchTab('menuTab')">☰</button>
-  </nav>  <script src="app.js"></script></body>
+      <!-- Вкладка 2: Категории -->
+      <section id="categories" class="tab">
+        <h2>Категории товаров</h2>
+        <div id="category-gallery"></div>
+      </section>
+
+      <!-- Вкладка 3: Меню -->
+      <section id="menu" class="tab">
+        <h2>Меню сайта</h2>
+        <ul>
+          <li><a href="favorites.html">⭐ Избранное</a></li>
+          <li><a href="delivery.html">🚚 Доставка</a></li>
+          <li><a href="contacts.html">📞 Контакты</a></li>
+          <li><a href="address.html">📍 Адрес</a></li>
+          <li><a href="reviews.html">🗣 Отзывы</a></li>
+          <li><a href="#" onclick="location.reload()">🔄 Обновить сайт</a></li>
+          <li><a href="terms.html">📜 Правила</a></li>
+        </ul>
+      </section>
+    </main>
+  </div>
+
+  <!-- Нижнее меню (tab bar) для мобильных -->
+  <nav class="tabbar">
+    <button class="tabbar-btn active" data-tab="search" aria-label="Поиск и товары">
+      <svg viewBox="0 0 24 24"><path d="M21 20l-5.6-5.6a7 7 0 1 0-1.4 1.4L20 21zM10 16a6 6 0 1 1 0-12 6 6 0 0 1 0 12z"/></svg>
+      Поиск
+    </button>
+    <button class="tabbar-btn" data-tab="categories" aria-label="Категории">
+      <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8v-10h-8v10zm0-18v6h8V3h-8z"/></svg>
+      Категории
+    </button>
+    <button class="tabbar-btn" data-tab="menu" aria-label="Меню">
+      <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      Меню
+    </button>
+  </nav>
+
+  <script>
+    // Переключение слайдов рекламы
+    const slides = document.querySelectorAll('.slide');
+    const dots = document.querySelectorAll('.dot');
+    let currentSlide = 0;
+
+    function showSlide(index) {
+      slides[currentSlide].classList.remove('active');
+      dots[currentSlide].classList.remove('active');
+      currentSlide = index;
+      slides[currentSlide].classList.add('active');
+      dots[currentSlide].classList.add('active');
+    }
+
+    dots.forEach(dot => {
+      dot.addEventListener('click', () => showSlide(Number(dot.dataset.index)));
+    });
+
+    setInterval(() => {
+      let next = (currentSlide + 1) % slides.length;
+      showSlide(next);
+    }, 5000);
+
+    // Переключение вкладок (как в меню сбоку, так и в таббаре)
+    const tabs = document.querySelectorAll('.tab');
+    const menuLinks = document.querySelectorAll('.menu-link');
+    const tabbarBtns = document.querySelectorAll('.tabbar-btn');
+
+    function activateTab(tabId) {
+      tabs.forEach(tab => tab.classList.toggle('active', tab.id === tabId));
+      menuLinks.forEach(link => link.classList.toggle('active', link.dataset.tab === tabId));
+      tabbarBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tabId));
+    }
+
+    menuLinks.forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        activateTab(link.dataset.tab);
+      });
+    });
+
+    tabbarBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        activateTab(btn.dataset.tab);
+      });
+    });
+  </script>
+</body>
 </html>
