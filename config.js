@@ -1,3 +1,3 @@
-// 📄 config.js
-const sheetId = '1vRWJ_CpYRd1TvS3NWbto7jEZ2VPBe2zORR1U3_dCkRxo_3ao7hptKeEfZrnILQID9y_ex8UDRSStvP-';
-const baseUrl = `https://opensheet.elk.sh/${sheetId}`;
+// config.js
+const sheetId = '1fXTvbglK1iQ_HyTo6BKWw2EaSn79rnxm977bjNR_-0U';
+const url = `https://opensheet.elk.sh/${sheetId}/Sheet1`;
