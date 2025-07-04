@@ -1,33 +1,63 @@
 // app.js
 
-// products и filteredProducts для хранения и фильтрации
 let products = [];
 let filteredProducts = [];
+let currentIndex = null;
 
-// Создание карточки товара (с фото или видео RuTube, если есть)
-function createProductCard(product) {
+document.addEventListener('DOMContentLoaded', () => {
+  loadProducts();
+});
+
+// Загрузка товаров из Google Таблицы
+async function loadProducts() {
+  try {
+    const res = await fetch(${baseUrl}/Sheet1);
+    const data = await res.json();
+
+    products = data.filter(p => p.название && (p.фото || p.видео));
+    products.reverse();
+
+    updateFilters();
+    setupAutocomplete();
+    setupEvents();
+    filterProducts();
+  } catch (err) {
+    console.error('Ошибка загрузки:', err);
+    document.getElementById('product-list').innerHTML = '<p>Ошибка загрузки товаров.</p>';
+  }
+}
+
+// Создание карточки товара
+function createProductCard(p, index) {
   const card = document.createElement('div');
   card.className = 'product-card';
+  card.setAttribute('data-index', index);
 
-  const media = product.видео
-    ? `<iframe width="100%" height="180" src="https://rutube.ru/play/embed/${product.видео}" frameborder="0" allowfullscreen style="border-radius:12px;"></iframe>`
-    : `<img src="${product.фото}" alt="${product.название}" loading="lazy" />`;
+  const media = p.видео?.includes('rutube.ru')
+    ? <iframe width="100%" height="180" src="${p.видео}" frameborder="0" allowfullscreen style="border-radius:12px;"></iframe>
+    : <img src="${p.фото}" alt="${p.название}" loading="lazy" />;
 
   card.innerHTML = `
     ${media}
-    <h3>${product.название || 'Без названия'}</h3>
-    ${product.описание ? `<p>${product.описание}</p>` : ''}
-    <strong>${product.цена} ₽</strong>
+    <h3>${p.название}</h3>
+    ${p.описание ? <p>${p.описание}</p> : ''}
+    <strong>${p.цена} ₽</strong>
     <div class="card-buttons">
       <a href="https://wa.me/79376280080" target="_blank">WhatsApp</a>
-      <button class="fav-btn" onclick="toggleFavorite('${product.название}')">⭐</button>
+      <button class="fav-btn" onclick="toggleFavorite('${p.название}', event)">⭐</button>
     </div>
   `;
+
+  card.addEventListener('click', (e) => {
+    if (e.target.closest('a') || e.target.closest('.fav-btn')) return;
+    currentIndex = index;
+    openModal(products[currentIndex]);
+  });
 
   return card;
 }
 
-// Отображение списка товаров
+// Отображение товаров
 function renderProducts(list) {
   const container = document.getElementById('product-list');
   container.innerHTML = '';
@@ -37,18 +67,13 @@ function renderProducts(list) {
     return;
   }
 
-  const grid = document.createElement('div');
-  grid.className = 'product-grid';
-
-  list.forEach(product => {
-    const card = createProductCard(product);
-    grid.appendChild(card);
+  list.forEach((p, i) => {
+    const card = createProductCard(p, i);
+    container.appendChild(card);
   });
-
-  container.appendChild(grid);
 }
 
-// Фильтрация товаров по фильтрам и поиску
+// Фильтрация
 function filterProducts() {
   const getVal = id => (document.getElementById(id)?.value || '').toLowerCase();
   const priceMin = parseFloat(document.getElementById('filter-price-min')?.value) || 0;
@@ -56,7 +81,7 @@ function filterProducts() {
   const search = getVal('searchInput');
 
   filteredProducts = products.filter(p => {
-    const fields = {
+    const f = {
       category: (p.категория || '').toLowerCase(),
       subcategory: (p.подкатегория || '').toLowerCase(),
       subsubcategory: (p.подподкатегория || '').toLowerCase(),
@@ -64,18 +89,18 @@ function filterProducts() {
       country: (p.страна || '').toLowerCase(),
       type: (p.тип || '').toLowerCase(),
       name: (p.название || '').toLowerCase(),
-      description: (p.описание || '').toLowerCase(),
+      desc: (p.описание || '').toLowerCase(),
       price: parseFloat(p.цена) || 0
     };
 
-    if (getVal('filter-category') && fields.category !== getVal('filter-category')) return false;
-    if (getVal('filter-subcategory') && fields.subcategory !== getVal('filter-subcategory')) return false;
-    if (getVal('filter-subsubcategory') && fields.subsubcategory !== getVal('filter-subsubcategory')) return false;
-    if (getVal('filter-brand') && fields.brand !== getVal('filter-brand')) return false;
-    if (getVal('filter-country') && fields.country !== getVal('filter-country')) return false;
-    if (getVal('filter-type') && fields.type !== getVal('filter-type')) return false;
-    if (fields.price < priceMin || fields.price > priceMax) return false;
-    if (search && !fields.name.includes(search) && !fields.description.includes(search)) return false;
+    if (getVal('filter-category') && f.category !== getVal('filter-category')) return false;
+    if (getVal('filter-subcategory') && f.subcategory !== getVal('filter-subcategory')) return false;
+    if (getVal('filter-subsubcategory') && f.subsubcategory !== getVal('filter-subsubcategory')) return false;
+    if (getVal('filter-brand') && f.brand !== getVal('filter-brand')) return false;
+    if (getVal('filter-country') && f.country !== getVal('filter-country')) return false;
+    if (getVal('filter-type') && f.type !== getVal('filter-type')) return false;
+    if (f.price < priceMin || f.price > priceMax) return false;
+    if (search && !f.name.includes(search) && !f.desc.includes(search)) return false;
 
     return true;
   });
@@ -83,7 +108,7 @@ function filterProducts() {
   renderProducts(filteredProducts);
 }
 
-// Заполнение фильтров уникальными значениями из товаров
+// Обновление фильтров
 function updateFilters() {
   const fields = {
     'filter-category': 'категория',
@@ -94,22 +119,21 @@ function updateFilters() {
     'filter-type': 'тип'
   };
 
-  Object.entries(fields).forEach(([selectId, fieldKey]) => {
-    const select = document.getElementById(selectId);
-    if (!select) return;
-    select.innerHTML = '<option value="">Все</option>'; // сброс перед заполнением
-
-    const values = [...new Set(products.map(p => p[fieldKey]).filter(Boolean))].sort();
-    values.forEach(val => {
+  Object.entries(fields).forEach(([id, key]) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.innerHTML = '<option value="">Все</option>';
+    const values = [...new Set(products.map(p => p[key]).filter(Boolean))].sort();
+    values.forEach(v => {
       const opt = document.createElement('option');
-      opt.value = val;
-      opt.textContent = val;
-      select.appendChild(opt);
+      opt.value = v;
+      opt.textContent = v;
+      el.appendChild(opt);
     });
   });
 }
 
-// Автозаполнение в поиске
+// Автозаполнение
 function setupAutocomplete() {
   const list = document.getElementById('autocompleteList');
   if (!list) return;
@@ -121,18 +145,7 @@ function setupAutocomplete() {
   });
 }
 
-// Избранное (сохраняется в localStorage)
-function toggleFavorite(name) {
-  let favs = JSON.parse(localStorage.getItem('favorites') || '[]');
-  if (favs.includes(name)) {
-    favs = favs.filter(n => n !== name);
-  } else {
-    favs.push(name);
-  }
-  localStorage.setItem('favorites', JSON.stringify(favs));
-}
-
-// Подключение обработчиков событий
+// Обработчики фильтров
 function setupEvents() {
   const fields = [
     'filter-category', 'filter-subcategory', 'filter-subsubcategory',
@@ -148,36 +161,62 @@ function setupEvents() {
   });
 }
 
-// Загрузка товаров из Google Sheets (через url из config.js)
-async function loadProducts() {
-  try {
-    const res = await fetch(url);
-    const data = await res.json();
+// Избранное
+function toggleFavorite(name, e) {
+  e.stopPropagation();
+  let favs = JSON.parse(localStorage.getItem('favorites') || '[]');
+  if (favs.includes(name)) {
+    favs = favs.filter(n => n !== name);
+  } else {
+    favs.push(name);
+  }
+  localStorage.setItem('favorites', JSON.stringify(favs));
+  e.target.classList.toggle('active');
+}
 
-    products = data.map(p => ({
-      ...p,
-      photo: p.фото,
-      name: p.название,
-      description: p.описание,
-      price: p.цена,
-      video: p.видео,
-      category: p.категория,
-      subcategory: p.подкатегория,
-      subsubcategory: p.подподкатегория,
-      brand: p.бренд,
-      country: p.страна,
-      type: p.тип
-    }));
+// Модалка
+function openModal(product) {
+  const modal = document.getElementById('product-modal');
+  const content = document.getElementById('modal-content');
 
-    products.reverse(); // Новые сверху
-    updateFilters();
-    setupAutocomplete();
-    setupEvents();
-    filterProducts();
-  } catch (err) {
-    console.error('Ошибка загрузки:', err);
-    document.getElementById('product-list').innerHTML = '<p>Ошибка загрузки товаров.</p>';
+  const media = product.видео?.includes('rutube.ru')
+    ? <iframe width="100%" height="200" src="${product.видео}" frameborder="0" allowfullscreen style="border-radius:12px;"></iframe>
+    : <img src="${product.фото}" alt="${product.название}" style="width:100%; border-radius:12px;" />;
+
+  content.innerHTML = `
+    ${media}
+    <h2 style="color:#a63b3b">${product.название}</h2>
+    <p style="white-space: pre-line;">${product.описание || ''}</p>
+    <strong style="font-size:18px;">${product.цена} ₽</strong>
+    <br/><br/>
+    <a href="https://wa.me/79376280080" class="buy-button" target="_blank">Связаться в WhatsApp</a>
+    <div style="margin-top:20px; display:flex; justify-content:space-between;">
+      <button onclick="showPrevProduct()">← Назад</button>
+      <button onclick="showNextProduct()">Вперёд →</button>
+    </div>
+  `;
+
+  modal.style.display = 'flex';
+}
+
+// Переключение товаров в модалке
+function showNextProduct() {
+  if (currentIndex < products.length - 1) {
+    currentIndex++;
+    openModal(products[currentIndex]);
+  }
+}
+function showPrevProduct() {
+  if (currentIndex > 0) {
+    currentIndex--;
+    openModal(products[currentIndex]);
   }
 }
 
-document.addEventListener('DOMContentLoaded', loadProducts);
+// Закрытие модалки по клику вне окна
+document.addEventListener('click', e => {
+  const modal = document.getElementById('product-modal');
+  if (e.target === modal) {
+    modal.style.display = 'none';
+  }
+});
