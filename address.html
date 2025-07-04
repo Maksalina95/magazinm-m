@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Адрес — Магазин Максалины</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7e9e9;
+      color: #5a2e2e;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      display: flex;
+      min-height: 100vh;
+      flex-direction: row;
+    }
+
+    aside {
+      width: 220px;
+      background: #fff0f0;
+      padding: 20px;
+      box-shadow: 2px 0 6px rgba(0,0,0,0.1);
+    }
+
+    aside h2 {
+      font-size: 18px;
+      margin-top: 0;
+      color: #a63b3b;
+    }
+
+    aside a {
+      display: block;
+      margin: 10px 0;
+      color: #a63b3b;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 8px;
+      border-radius: 6px;
+      transition: background-color 0.2s;
+    }
+
+    aside a:hover,
+    aside a.active {
+      background-color: #ffdede;
+    }
+
+    main {
+      flex: 1;
+      padding: 20px;
+      background: #fff;
+    }
+
+    h1 {
+      font-weight: 700;
+      color: #a63b3b;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .address-box {
+      background: #f2dede;
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 600px;
+      margin: 0 auto;
+      box-shadow: 0 0 6px rgba(166, 59, 59, 0.3);
+    }
+
+    .address-box p {
+      font-size: 18px;
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    /* 📱 Мобильная адаптация */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      aside {
+        width: 100%;
+        display: flex;
+        overflow-x: auto;
+        white-space: nowrap;
+        padding: 10px;
+      }
+      aside a {
+        flex: 1 0 auto;
+        margin: 0 6px;
+        text-align: center;
+      }
+      main {
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <aside>
+      <h2>Меню</h2>
+      <a href="index.html">🏠 Главная</a>
+      <a href="favorites.html">⭐ Избранное</a>
+      <a href="delivery.html">🚚 Доставка</a>
+      <a href="contacts.html">📞 Контакты</a>
+      <a href="address.html" class="active">📍 Адрес</a>
+      <a href="reviews.html">🗣 Отзывы</a>
+      <a href="#" onclick="location.reload()">🔄 Обновить сайт</a>
+      <a href="terms.html">📜 Правила</a>
+    </aside>
+
+    <main>
+      <h1>📍 Адрес</h1>
+      <div class="address-box">
+        <p><strong>Наш старый адрес:</strong></p>
+        <p>ТЦ «Адамо», 2 этаж, павильон №21.</p>
+        <p><strong>Новый формат:</strong></p>
+        <p>Работаем без торговой точки. Всё через WhatsApp и сайт 🛍</p>
+        <p>Заказы принимаются с заботой и вниманием 🌷</p>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
