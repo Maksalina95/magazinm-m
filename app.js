@@ -10,13 +10,13 @@ function createProductCard(product) {
   card.className = 'product-card';
 
   const media = product.видео
-    ? <iframe width="100%" height="180" src="https://rutube.ru/play/embed/${product.видео}" frameborder="0" allowfullscreen style="border-radius:12px;"></iframe>
-    : <img src="${product.фото}" alt="${product.название}" loading="lazy" />;
+    ? `<iframe width="100%" height="180" src="https://rutube.ru/play/embed/${product.видео}" frameborder="0" allowfullscreen style="border-radius:12px;"></iframe>`
+    : `<img src="${product.фото}" alt="${product.название}" loading="lazy" />`;
 
   card.innerHTML = `
     ${media}
     <h3>${product.название || 'Без названия'}</h3>
-    ${product.описание ? <p>${product.описание}</p> : ''}
+    ${product.описание ? `<p>${product.описание}</p>` : ''}
     <strong>${product.цена} ₽</strong>
     <div class="card-buttons">
       <a href="https://wa.me/79376280080" target="_blank">WhatsApp</a>
