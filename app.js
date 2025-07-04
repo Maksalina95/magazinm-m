@@ -1,151 +1,102 @@
-// 📦 Настройки подключения к Google Таблице через OpenSheet
-const sheetId = '2PACX-1vRWJ_CpYRd1TvS3NWbto7jEZ2VPBe2zORR1U3_dCkRxo_3ao7hptKeEfZrnILQID9y_ex8UDRSStvP-';
-const baseUrl = https://opensheet.elk.sh/${sheetId}/Sheet1; // Или Sheet1List — если у тебя другой лист
+// app.js
 
-const productList = document.getElementById('product-list');
-const categoryGallery = document.getElementById('category-gallery');
-const filters = document.getElementById('filters');
-const searchInput = document.getElementById('searchInput');
-const autoList = document.getElementById('autocompleteList');
+let products = [];
+let filteredProducts = [];
 
-let productsData = [];
+// Создание карточки товара с поддержкой видео и фото
+function createProductCard(product) {
+  const card = document.createElement('div');
+  card.className = 'product-card';
 
-// 📥 Загрузка данных
-fetch(baseUrl)
-  .then(res => res.json())
-  .then(data => {
-    productsData = data.filter(item => item.фото && item.название && item.цена);
+  const media = product.video
+    ? <iframe width="100%" height="180" src="https://rutube.ru/play/embed/${product.video}" frameborder="0" allowfullscreen style="border-radius:12px;"></iframe>
+    : <img src="${product.photo}" alt="${product.name}" />;
 
-    renderCategories();
-    setupAutocomplete();
-    setupSearchHandler();
-    updateFilters(productsData);
-    setupFilterHandlers();
-  })
-  .catch(err => {
-    if (productList) productList.innerHTML = '<p>Ошибка загрузки товаров.</p>';
-    console.error(err);
-  });
+  card.innerHTML = `
+    ${media}
+    <h3>${product.name || 'Без названия'}</h3>
+    ${product.description ? <p>${product.description}</p> : ''}
+    <strong>${product.price} ₽</strong>
+    <div class="card-buttons">
+      <a href="https://wa.me/79376280080" target="_blank">WhatsApp</a>
+      <button class="fav-btn" onclick="toggleFavorite('${product.name}')">⭐</button>
+    </div>
+  `;
 
-// 🧱 Показ товаров
-function showProducts(list) {
-  if (!productList) return;
-  productList.innerHTML = '';
-
-  list.forEach(item => {
-    const el = document.createElement('div');
-    el.className = 'product-card';
-
-    el.innerHTML = `
-      ${item.видео 
-        ? <video controls src="${item.видео}"></video> 
-        : <img src="${item.фото}" alt="${item.название}" />}
-      <h3>${item.название}</h3>
-      ${item.описание ? <p>${item.описание}</p> : ''}
-      <strong>${item.цена} ₽</strong>
-      <div class="card-buttons">
-        <a href="https://wa.me/79376280080" target="_blank">WhatsApp</a>
-        <button class="fav-btn" onclick="toggleFavorite('${item.название}')">⭐</button>
-      </div>
-    `;
-    productList.appendChild(el);
-  });
+  return card;
 }
 
-// 📁 Категории
-function renderCategories() {
-  if (!categoryGallery) return;
-  const categories = {};
+// Отображение товаров на странице
+function renderProducts(list) {
+  const container = document.getElementById('product-list');
+  container.innerHTML = '';
 
-  productsData.forEach(item => {
-    const cat = item.категория;
-    if (cat && !categories[cat]) {
-      categories[cat] = item['картинка категории'] || item.фото;
-    }
+  if (!list.length) {
+    container.innerHTML = '<p>Товары не найдены.</p>';
+    return;
+  }
+
+  const grid = document.createElement('div');
+  grid.className = 'product-grid';
+
+  list.forEach(product => {
+    const card = createProductCard(product);
+    grid.appendChild(card);
   });
 
-  categoryGallery.innerHTML = '';
-
-  Object.entries(categories).forEach(([name, image]) => {
-    const tile = document.createElement('div');
-    tile.className = 'category-tile';
-    tile.innerHTML = `
-      <a href="#" onclick="filterByCategory('${name}')">
-        <img src="${image}" alt="${name}" />
-        <span>${name}</span>
-      </a>
-    `;
-    categoryGallery.appendChild(tile);
-  });
+  container.appendChild(grid);
 }
 
-function filterByCategory(cat) {
-  const filtered = productsData.filter(p => p.категория === cat);
-  if (filters) filters.style.display = 'flex';
-  if (categoryGallery) categoryGallery.style.display = 'none';
-  if (productList) productList.style.display = 'grid';
-  showProducts(filtered);
-}
+// Фильтрация товаров по значениям фильтров и поиску
+function filterProducts() {
+  const getVal = id => (document.getElementById(id)?.value || '').toLowerCase();
+  const priceMin = parseFloat(document.getElementById('filter-price-min')?.value) || 0;
+  const priceMax = parseFloat(document.getElementById('filter-price-max')?.value) || Infinity;
+  const search = getVal('searchInput');
 
-// 🔍 Поиск
-function setupSearchHandler() {
-  if (!searchInput) return;
-  searchInput.addEventListener('input', () => {
-    const term = searchInput.value.toLowerCase();
-    const result = productsData.filter(p => p.название.toLowerCase().includes(term));
+  filteredProducts = products.filter(p => {
+    const fields = {
+      category: (p.category || '').toLowerCase(),
+      subcategory: (p.subcategory || '').toLowerCase(),
+      subsubcategory: (p.subsubcategory || '').toLowerCase(),
+      brand: (p.brand || '').toLowerCase(),
+      country: (p.country || '').toLowerCase(),
+      type: (p.type || '').toLowerCase(),
+      name: (p.name || '').toLowerCase(),
+      description: (p.description || '').toLowerCase(),
+      price: parseFloat(p.price) || 0
+    };
 
-    filters.style.display = term ? 'flex' : 'none';
-    categoryGallery.style.display = term ? 'none' : 'grid';
-    productList.style.display = term ? 'grid' : 'none';
+    if (getVal('filter-category') && fields.category !== getVal('filter-category')) return false;
+    if (getVal('filter-subcategory') && fields.subcategory !== getVal('filter-subcategory')) return false;
+    if (getVal('filter-subsubcategory') && fields.subsubcategory !== getVal('filter-subsubcategory')) return false;
+    if (getVal('filter-brand') && fields.brand !== getVal('filter-brand')) return false;
+    if (getVal('filter-country') && fields.country !== getVal('filter-country')) return false;
+    if (getVal('filter-type') && fields.type !== getVal('filter-type')) return false;
+    if (fields.price < priceMin || fields.price > priceMax) return false;
+    if (search && !fields.name.includes(search) && !fields.description.includes(search)) return false;
 
-    showProducts(result);
-  });
-}
-
-// 💡 Автозаполнение
-function setupAutocomplete() {
-  if (!autoList) return;
-  autoList.innerHTML = '';
-  productsData.forEach(p => {
-    const opt = document.createElement('option');
-    opt.value = p.название;
-    autoList.appendChild(opt);
-  });
-}
-
-// 🎯 Фильтры
-const filterSelects = document.querySelectorAll('#filters select, #filters input[type=number]');
-filterSelects.forEach(sel => sel.addEventListener('input', applyFilters));
-
-function applyFilters() {
-  let result = [...productsData];
-
-  filterSelects.forEach(sel => {
-    const id = sel.id.replace('filter-', '');
-    const val = sel.value.toLowerCase();
-    if (val && val !== 'все') {
-      result = result.filter(p => (p[id] || '').toLowerCase().includes(val));
-    }
+    return true;
   });
 
-  const min = parseFloat(document.getElementById('filter-price-min')?.value || 0);
-  const max = parseFloat(document.getElementById('filter-price-max')?.value || 999999);
-
-  result = result.filter(p => {
-    const price = parseFloat(p.цена);
-    return !isNaN(price) && price >= min && price <= max;
-  });
-
-  showProducts(result);
+  renderProducts(filteredProducts);
 }
 
-// 🔄 Заполнение фильтров
-function updateFilters(data) {
-  const fields = ['категория', 'подкатегория', 'раздел', 'бренд', 'страна', 'тип'];
-  fields.forEach(field => {
-    const select = document.getElementById(filter-${field});
+// Заполнение фильтров уникальными значениями
+function updateFilters() {
+  const fields = {
+    'filter-category': 'category',
+    'filter-subcategory': 'subcategory',
+    'filter-subsubcategory': 'subsubcategory',
+    'filter-brand': 'brand',
+    'filter-country': 'country',
+    'filter-type': 'type'
+  };
+
+  Object.entries(fields).forEach(([selectId, fieldKey]) => {
+    const select = document.getElementById(selectId);
     if (!select) return;
-    const values = [...new Set(data.map(item => item[field]).filter(Boolean))];
+    const values = [...new Set(products.map(p => p[fieldKey]).filter(Boolean))].sort();
     values.forEach(val => {
       const opt = document.createElement('option');
       opt.value = val;
@@ -155,7 +106,19 @@ function updateFilters(data) {
   });
 }
 
-// ⭐ Избранное
+// Настройка автозаполнения поиска
+function setupAutocomplete() {
+  const list = document.getElementById('autocompleteList');
+  if (!list) return;
+  list.innerHTML = '';
+  products.forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p.name;
+    list.appendChild(opt);
+  });
+}
+
+// Управление "избранным"
 function toggleFavorite(name) {
   let favs = JSON.parse(localStorage.getItem('favorites') || '[]');
   if (favs.includes(name)) {
@@ -165,3 +128,56 @@ function toggleFavorite(name) {
   }
   localStorage.setItem('favorites', JSON.stringify(favs));
 }
+
+// Установка слушателей для фильтров и поиска
+function setupEvents() {
+  const fields = [
+    'filter-category', 'filter-subcategory', 'filter-subsubcategory',
+    'filter-brand', 'filter-country', 'filter-type',
+    'filter-price-min', 'filter-price-max', 'searchInput'
+  ];
+  fields.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('input', filterProducts);
+      el.addEventListener('change', filterProducts);
+    }
+  });
+}
+
+// Загрузка данных из Google Таблицы
+async function loadProducts() {
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+
+    // Перевод полей из русского в англ.
+    products = data.map(p => ({
+      ...p,
+      photo: p.фото,
+      name: p.название,
+      description: p.описание,
+      price: p.цена,
+      video: p.видео,
+      category: p.категория,
+      subcategory: p.подкатегория,
+      subsubcategory: p.подподкатегория,
+      brand: p.бренд,
+      country: p.страна,
+      type: p.тип,
+    }));
+
+    // Новые товары первыми
+    products.reverse();
+
+    updateFilters();
+    setupAutocomplete();
+    setupEvents();
+    filterProducts();
+  } catch (err) {
+    console.error('Ошибка загрузки:', err);
+    document.getElementById('product-list').innerHTML = '<p>Ошибка загрузки товаров</p>';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', loadProducts);
