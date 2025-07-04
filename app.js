@@ -1,19 +1,22 @@
+// app.js
+
+// products и filteredProducts для хранения и фильтрации
 let products = [];
 let filteredProducts = [];
 
-// 🧱 Создание карточки товара
+// Создание карточки товара (с фото или видео RuTube, если есть)
 function createProductCard(product) {
   const card = document.createElement('div');
   card.className = 'product-card';
 
   const media = product.видео
-    ? `<iframe width="100%" height="180" src="https://rutube.ru/play/embed/${product.видео}" frameborder="0" allowfullscreen style="border-radius:12px;"></iframe>`
-    : `<img src="${product.фото}" alt="${product.название}" />`;
+    ? <iframe width="100%" height="180" src="https://rutube.ru/play/embed/${product.видео}" frameborder="0" allowfullscreen style="border-radius:12px;"></iframe>
+    : <img src="${product.фото}" alt="${product.название}" loading="lazy" />;
 
   card.innerHTML = `
     ${media}
     <h3>${product.название || 'Без названия'}</h3>
-    ${product.описание ? `<p>${product.описание}</p>` : ''}
+    ${product.описание ? <p>${product.описание}</p> : ''}
     <strong>${product.цена} ₽</strong>
     <div class="card-buttons">
       <a href="https://wa.me/79376280080" target="_blank">WhatsApp</a>
@@ -24,7 +27,7 @@ function createProductCard(product) {
   return card;
 }
 
-// 🖼 Отображение
+// Отображение списка товаров
 function renderProducts(list) {
   const container = document.getElementById('product-list');
   container.innerHTML = '';
@@ -45,7 +48,7 @@ function renderProducts(list) {
   container.appendChild(grid);
 }
 
-// 🧠 Фильтрация
+// Фильтрация товаров по фильтрам и поиску
 function filterProducts() {
   const getVal = id => (document.getElementById(id)?.value || '').toLowerCase();
   const priceMin = parseFloat(document.getElementById('filter-price-min')?.value) || 0;
@@ -80,7 +83,7 @@ function filterProducts() {
   renderProducts(filteredProducts);
 }
 
-// 🧩 Заполнение фильтров
+// Заполнение фильтров уникальными значениями из товаров
 function updateFilters() {
   const fields = {
     'filter-category': 'категория',
@@ -94,6 +97,8 @@ function updateFilters() {
   Object.entries(fields).forEach(([selectId, fieldKey]) => {
     const select = document.getElementById(selectId);
     if (!select) return;
+    select.innerHTML = '<option value="">Все</option>'; // сброс перед заполнением
+
     const values = [...new Set(products.map(p => p[fieldKey]).filter(Boolean))].sort();
     values.forEach(val => {
       const opt = document.createElement('option');
@@ -104,7 +109,7 @@ function updateFilters() {
   });
 }
 
-// 🔍 Автозаполнение
+// Автозаполнение в поиске
 function setupAutocomplete() {
   const list = document.getElementById('autocompleteList');
   if (!list) return;
@@ -116,7 +121,7 @@ function setupAutocomplete() {
   });
 }
 
-// ⭐ Избранное
+// Избранное (сохраняется в localStorage)
 function toggleFavorite(name) {
   let favs = JSON.parse(localStorage.getItem('favorites') || '[]');
   if (favs.includes(name)) {
@@ -127,7 +132,7 @@ function toggleFavorite(name) {
   localStorage.setItem('favorites', JSON.stringify(favs));
 }
 
-// 🧠 Обработчики
+// Подключение обработчиков событий
 function setupEvents() {
   const fields = [
     'filter-category', 'filter-subcategory', 'filter-subsubcategory',
@@ -143,7 +148,7 @@ function setupEvents() {
   });
 }
 
-// 🚀 Загрузка товаров
+// Загрузка товаров из Google Sheets (через url из config.js)
 async function loadProducts() {
   try {
     const res = await fetch(url);
@@ -164,11 +169,11 @@ async function loadProducts() {
       type: p.тип
     }));
 
-    products.reverse(); // Новые вверху
+    products.reverse(); // Новые сверху
     updateFilters();
     setupAutocomplete();
     setupEvents();
-    filterProducts(); // Показываем всё сразу
+    filterProducts();
   } catch (err) {
     console.error('Ошибка загрузки:', err);
     document.getElementById('product-list').innerHTML = '<p>Ошибка загрузки товаров.</p>';
