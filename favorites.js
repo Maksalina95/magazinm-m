@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
       card.innerHTML = `
         ${media}
         <h3>${product.название}</h3>
-        ${product.описание ? <p>${product.описание}</p> : ''}
+        ${product.описание ? `<p>${product.описание}</p>` : ''}
         <strong>${product.цена} ₽</strong>
         <div class="card-buttons">
           <a href="https://wa.me/79376280080" target="_blank">WhatsApp</a>
