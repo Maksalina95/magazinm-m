@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Товары в категории — Магазин Максалины</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <aside>
+      <h2>Меню</h2>
+      <a href="index.html">🏠 Главная</a>
+      <a href="favorites.html">⭐ Избранное</a>
+      <a href="delivery.html">🚚 Доставка</a>
+      <a href="contacts.html">📞 Контакты</a>
+      <a href="address.html">📍 Адрес</a>
+      <a href="reviews.html">🗣 Отзывы</a>
+      <a href="#" onclick="location.reload()">🔄 Обновить сайт</a>
+      <a href="terms.html">📜 Правила</a>
+    </aside>
+
+    <main>
+      <h1 id="categoryTitle" style="color: #a63b3b;">Товары</h1>
+      <div id="product-list" class="product-grid"></div>
+    </main>
+  </div>
+
+  <!-- 🔍 Модальное окно -->
+  <div id="product-modal" style="display:none; position:fixed; top:0;left:0;right:0;bottom:0; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:1000;">
+    <div style="background:white; border-radius:12px; max-width:500px; width:90%; padding:20px; position:relative;">
+      <button id="modal-close" style="position:absolute; top:10px; right:10px; font-size:20px; background:none; border:none; cursor:pointer;">×</button>
+      <div id="modal-content"></div>
+    </div>
+  </div>
+
+  <script>
+    const sheetId = '1gBcuPzWv_nH2i7sWyCaERVCjO-hLg8EcndPkEMlNqgw';
+    const url = https://opensheet.elk.sh/${sheetId}/Sheet1;
+
+    const params = new URLSearchParams(window.location.search);
+    const selectedCategory = params.get('category');
+    document.getElementById('categoryTitle').textContent = selectedCategory;
+
+    const productList = document.getElementById('product-list');
+    const modal = document.getElementById('product-modal');
+    const modalContent = document.getElementById('modal-content');
+    const modalClose = document.getElementById('modal-close');
+    modalClose.onclick = () => (modal.style.display = 'none');
+    modal.onclick = e => { if (e.target === modal) modal.style.display = 'none'; };
+
+    fetch(url)
+      .then(res => res.json())
+      .then(data => {
+        const filtered = data.filter(item => item.категория === selectedCategory);
+
+        if (filtered.length === 0) {
+          productList.innerHTML = '<p>Нет товаров в этой категории.</p>';
+          return;
+        }
+
+        filtered.forEach(item => {
+          const card = document.createElement('div');
+          card.className = 'product-card';
+          card.innerHTML = `
+            ${item.видео 
+              ? <video controls src="${item.видео}" style="width:100%;border-radius:12px;"></video>
+              : <img src="${item.фото}" alt="${item.название}" />}
+            <h3>${item.название}</h3>
+            ${item.описание ? <p>${item.описание}</p> : ''}
+            <strong>${item.цена} ₽</strong>
+            <div class="card-buttons">
+              <a href="https://wa.me/79376280080" class="buy-button" target="_blank">Купить в WhatsApp</a>
+              <button class="fav-btn" data-name="${item.название}">⭐</button>
+            </div>
+          `;
+          card.addEventListener('click', e => {
+            if (e.target.closest('.fav-btn') || e.target.closest('a')) return;
+            openModal(item);
+          });
+          productList.appendChild(card);
+        });
+
+        // Избранное
+        document.querySelectorAll('.fav-btn').forEach(btn => {
+          btn.addEventListener('click', e => {
+            e.stopPropagation();
+            const name = btn.dataset.name;
+            let favs = JSON.parse(localStorage.getItem('favorites') || '[]');
+            if (favs.includes(name)) {
+              favs = favs.filter(n => n !== name);
+              btn.textContent = '⭐';
+            } else {
+              favs.push(name);
+              btn.textContent = '✅';
+            }
+            localStorage.setItem('favorites', JSON.stringify(favs));
+          });
+        });
+      })
+      .catch(err => {
+        console.error('Ошибка загрузки товаров:', err);
+        productList.innerHTML = '<p>Ошибка загрузки товаров.</p>';
+      });
+
+    function openModal(product) {
+      modalContent.innerHTML = `
+        ${product.видео 
+          ? <video controls src="${product.видео}" style="width:100%;border-radius:12px;"></video> 
+          : <img src="${product.фото}" alt="${product.название}" style="width:100%;border-radius:12px;" />}
+        <h2 style="color:#a63b3b;margin-top:15px;">${product.название}</h2>
+        <p style="white-space:pre-line;">${product.описание || ''}</p>
+        <strong style="font-size:20px;">${product.цена} ₽</strong>
+        <div style="margin-top:15px;">
+          <a href="https://wa.me/79376280080" class="buy-button" target="_blank">Связаться в WhatsApp</a>
+        </div>
+      `;
+      modal.style.display = 'flex';
+    }
+  </script>
+</body>
+</html>
