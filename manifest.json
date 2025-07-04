@@ -1,0 +1,43 @@
+{
+  "name": "Магазин Максалины",
+  "short_name": "Максалина",
+  "description": "Женский магазин с техникой, посудой, текстилем и многим другим. Всё — с любовью 💗",
+  "start_url": "index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#a63b3b",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Категории",
+      "short_name": "Категории",
+      "url": "category.html",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Избранное",
+      "short_name": "Избранное",
+      "url": "favorites.html",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Контакты",
+      "short_name": "Контакты",
+      "url": "contacts.html",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ],
+  "scope": "./"
+}
