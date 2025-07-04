@@ -1,34 +1,41 @@
-// 📄 config.js должен быть подключён до app.js
-// const appUrl = ${baseUrl}/Sheet1
+// 📦 Настройки подключения к Google Таблице через OpenSheet
+const sheetId = '2PACX-1vRWJ_CpYRd1TvS3NWbto7jEZ2VPBe2zORR1U3_dCkRxo_3ao7hptKeEfZrnILQID9y_ex8UDRSStvP-';
+const baseUrl = https://opensheet.elk.sh/${sheetId}/Sheet1; // Или Sheet1List — если у тебя другой лист
 
-const productListEl = document.getElementById('product-list');
-const searchInputEl = document.getElementById('searchInput');
-const autoListEl = document.getElementById('autocompleteList');
-const filtersEl = document.getElementById('filters');
+const productList = document.getElementById('product-list');
+const categoryGallery = document.getElementById('category-gallery');
+const filters = document.getElementById('filters');
+const searchInput = document.getElementById('searchInput');
+const autoList = document.getElementById('autocompleteList');
 
-let productListData = [];
+let productsData = [];
 
-// 📥 Загрузка данных из Google Таблицы через JSON
-fetch(appUrl)
+// 📥 Загрузка данных
+fetch(baseUrl)
   .then(res => res.json())
   .then(data => {
-    productListData = data.filter(item => item.фото && item.название && item.цена);
-    showProducts(productListData);
-    setupAutocomplete(productListData);
-    updateFilters(productListData);
+    productsData = data.filter(item => item.фото && item.название && item.цена);
+
+    renderCategories();
+    setupAutocomplete();
+    setupSearchHandler();
+    updateFilters(productsData);
+    setupFilterHandlers();
   })
   .catch(err => {
-    if (productListEl) productListEl.innerHTML = '<p>Ошибка загрузки товаров.</p>';
+    if (productList) productList.innerHTML = '<p>Ошибка загрузки товаров.</p>';
     console.error(err);
   });
 
-// 🧱 Отображение товаров
+// 🧱 Показ товаров
 function showProducts(list) {
-  if (!productListEl) return;
-  productListEl.innerHTML = '';
+  if (!productList) return;
+  productList.innerHTML = '';
+
   list.forEach(item => {
     const el = document.createElement('div');
     el.className = 'product-card';
+
     el.innerHTML = `
       ${item.видео 
         ? <video controls src="${item.видео}"></video> 
@@ -41,28 +48,68 @@ function showProducts(list) {
         <button class="fav-btn" onclick="toggleFavorite('${item.название}')">⭐</button>
       </div>
     `;
-    productListEl.appendChild(el);
+    productList.appendChild(el);
   });
 }
 
+// 📁 Категории
+function renderCategories() {
+  if (!categoryGallery) return;
+  const categories = {};
+
+  productsData.forEach(item => {
+    const cat = item.категория;
+    if (cat && !categories[cat]) {
+      categories[cat] = item['картинка категории'] || item.фото;
+    }
+  });
+
+  categoryGallery.innerHTML = '';
+
+  Object.entries(categories).forEach(([name, image]) => {
+    const tile = document.createElement('div');
+    tile.className = 'category-tile';
+    tile.innerHTML = `
+      <a href="#" onclick="filterByCategory('${name}')">
+        <img src="${image}" alt="${name}" />
+        <span>${name}</span>
+      </a>
+    `;
+    categoryGallery.appendChild(tile);
+  });
+}
+
+function filterByCategory(cat) {
+  const filtered = productsData.filter(p => p.категория === cat);
+  if (filters) filters.style.display = 'flex';
+  if (categoryGallery) categoryGallery.style.display = 'none';
+  if (productList) productList.style.display = 'grid';
+  showProducts(filtered);
+}
+
 // 🔍 Поиск
-if (searchInputEl) {
-  searchInputEl.addEventListener('input', () => {
-    const term = searchInputEl.value.toLowerCase();
-    const filtered = productListData.filter(p => p.название.toLowerCase().includes(term));
-    filtersEl.style.display = term ? 'flex' : 'none';
-    showProducts(filtered);
+function setupSearchHandler() {
+  if (!searchInput) return;
+  searchInput.addEventListener('input', () => {
+    const term = searchInput.value.toLowerCase();
+    const result = productsData.filter(p => p.название.toLowerCase().includes(term));
+
+    filters.style.display = term ? 'flex' : 'none';
+    categoryGallery.style.display = term ? 'none' : 'grid';
+    productList.style.display = term ? 'grid' : 'none';
+
+    showProducts(result);
   });
 }
 
 // 💡 Автозаполнение
-function setupAutocomplete(list) {
-  if (!autoListEl) return;
-  autoListEl.innerHTML = '';
-  list.forEach(p => {
+function setupAutocomplete() {
+  if (!autoList) return;
+  autoList.innerHTML = '';
+  productsData.forEach(p => {
     const opt = document.createElement('option');
     opt.value = p.название;
-    autoListEl.appendChild(opt);
+    autoList.appendChild(opt);
   });
 }
 
@@ -71,7 +118,8 @@ const filterSelects = document.querySelectorAll('#filters select, #filters input
 filterSelects.forEach(sel => sel.addEventListener('input', applyFilters));
 
 function applyFilters() {
-  let result = [...productListData];
+  let result = [...productsData];
+
   filterSelects.forEach(sel => {
     const id = sel.id.replace('filter-', '');
     const val = sel.value.toLowerCase();
@@ -82,6 +130,7 @@ function applyFilters() {
 
   const min = parseFloat(document.getElementById('filter-price-min')?.value || 0);
   const max = parseFloat(document.getElementById('filter-price-max')?.value || 999999);
+
   result = result.filter(p => {
     const price = parseFloat(p.цена);
     return !isNaN(price) && price >= min && price <= max;
@@ -90,14 +139,14 @@ function applyFilters() {
   showProducts(result);
 }
 
-// 🔄 Обновление списка фильтров
+// 🔄 Заполнение фильтров
 function updateFilters(data) {
   const fields = ['категория', 'подкатегория', 'раздел', 'бренд', 'страна', 'тип'];
   fields.forEach(field => {
     const select = document.getElementById(filter-${field});
     if (!select) return;
-    const unique = [...new Set(data.map(item => item[field]).filter(Boolean))];
-    unique.forEach(val => {
+    const values = [...new Set(data.map(item => item[field]).filter(Boolean))];
+    values.forEach(val => {
       const opt = document.createElement('option');
       opt.value = val;
       opt.textContent = val;
