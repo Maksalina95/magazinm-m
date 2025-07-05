@@ -18,7 +18,6 @@ body {
   display: flex;
   min-height: 100vh;
   flex-direction: row;
-  overflow-x: hidden;
 }
 
 aside {
@@ -222,7 +221,7 @@ main {
   background: #8b2d2d;
 }
 
-/* === 📋 Стили для вкладки Меню (tab "menu") === */
+/* === 📋 Меню вкладки (если используешь tab меню) === */
 #menu ul {
   list-style: none;
   padding: 0;
@@ -253,21 +252,23 @@ main {
   background: #fff4f4;
 }
 
-/* === 📱 Мобильная адаптация === */
+/* === 📱 Адаптивность (меню остаётся сбоку) === */
 @media (max-width: 768px) {
   .container {
     flex-direction: row;
-    overflow-x: hidden;
+    flex-wrap: nowrap;
   }
 
   aside {
-    display: none;
+    width: 200px;
+    min-height: 100vh;
+    overflow-y: auto;
+    position: relative;
   }
 
   main {
-    padding: 12px;
-    min-width: 0;
-    overflow-wrap: break-word;
+    padding: 15px;
+    flex: 1;
   }
 
   .product-card h3 {
