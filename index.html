@@ -6,102 +6,56 @@
   <title>Магазин Максалины</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    /* === Общие стили === */
-    *, *::before, *::after {
-      box-sizing: border-box;
-    }
+    *, *::before, *::after { box-sizing: border-box; }
     body {
       font-family: Arial, sans-serif;
       background: #f7e9e9;
       color: #5a2e2e;
-      margin: 0;
-      padding: 0;
+      margin: 0; padding: 0;
       position: relative;
       min-height: 100vh;
       overflow-x: hidden;
     }
     body::after {
-      content: "";
-      position: fixed;
+      content: ""; position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      background-image: url('images/fon.jpg');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      opacity: 0.1;
-      z-index: -1;
+      background: url('images/fon.jpg') center/cover no-repeat;
+      opacity: 0.1; z-index: -1;
       pointer-events: none;
     }
-    .container {
-      display: flex;
-      min-height: 100vh;
-    }
+    .container { display: flex; min-height: 100vh; }
     aside {
-      width: 220px;
-      background: #fff0f0;
-      padding: 20px;
-      box-shadow: 2px 0 6px rgba(0,0,0,0.1);
-      flex-shrink: 0;
+      width: 220px; background: #fff0f0;
+      padding: 20px; box-shadow: 2px 0 6px rgba(0,0,0,0.1);
     }
-    aside h2 {
-      font-size: 18px;
-      margin-top: 0;
-      color: #a63b3b;
-    }
+    aside h2 { font-size: 18px; margin-top: 0; color: #a63b3b; }
     aside a {
-      display: block;
-      margin: 10px 0;
-      color: #a63b3b;
-      text-decoration: none;
-      font-weight: bold;
-      padding: 8px;
-      border-radius: 6px;
+      display: block; margin: 10px 0;
+      color: #a63b3b; text-decoration: none; font-weight: bold;
+      padding: 8px; border-radius: 6px;
     }
-    aside a:hover, aside a.active {
-      background-color: #ffdede;
-    }
+    aside a:hover, aside a.active { background: #ffdede; }
     main {
-      flex: 1;
-      padding: 20px;
-      background: #fff;
-      min-width: 0;
-      overflow-wrap: break-word;
-      position: relative;
+      flex: 1; padding: 20px; background: #fff;
+      min-width: 0; overflow-wrap: break-word;
     }
     .tab { display: none; }
     .tab.active { display: block; }
     .tabbar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 56px;
-      background: #fff0f0;
+      position: fixed; bottom: 0; left: 0; right: 0;
+      height: 56px; background: #fff0f0;
       border-top: 1px solid #a63b3b;
-      display: none;
-      justify-content: space-around;
-      align-items: center;
-      box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
-      z-index: 1000;
+      display: none; justify-content: space-around; align-items: center;
+      box-shadow: 0 -2px 6px rgba(0,0,0,0.1); z-index: 1000;
     }
     .tabbar button {
-      background: none;
-      border: none;
-      color: #a63b3b;
-      font-size: 18px;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      flex: 1;
-      padding: 6px 0;
+      background: none; border: none; color: #a63b3b;
+      font-size: 18px; cursor: pointer;
+      display: flex; flex-direction: column; align-items: center;
+      flex: 1; padding: 6px 0;
     }
-    .tabbar button.active {
-      color: #ff5e5e;
-      font-weight: bold;
-    }
+    .tabbar button.active { color: #ff5e5e; font-weight: bold; }
     @media (max-width: 768px) {
       .container { flex-direction: column; padding-bottom: 56px; }
       aside { display: none; }
@@ -115,20 +69,15 @@
       z-index: 999;
     }
     .modal-content {
-      background: #fff;
-      padding: 20px;
-      border-radius: 12px;
-      max-width: 500px;
-      width: 90%;
-      position: relative;
+      background: #fff; padding: 20px; border-radius: 12px;
+      max-width: 500px; width: 90%; position: relative;
     }
     .modal-close {
       position: absolute; top: 10px; right: 10px;
       background: none; border: none; font-size: 24px; cursor: pointer;
     }
     .modal-nav {
-      display: flex; justify-content: space-between;
-      margin-top: 10px;
+      display: flex; justify-content: space-between; margin-top: 10px;
     }
   </style>
 </head>
@@ -140,6 +89,7 @@
       <a href="#" class="menu-link" data-tab="categories">📦 Категории</a>
       <a href="#" class="menu-link" data-tab="menu">☰ Меню</a>
     </aside>
+
     <main>
       <section id="search" class="tab active">
         <div class="slider-container">
@@ -156,10 +106,12 @@
         </div>
         <div id="product-list" class="product-list"></div>
       </section>
+
       <section id="categories" class="tab">
         <h2>Категории товаров</h2>
         <div id="category-gallery"></div>
       </section>
+
       <section id="menu" class="tab">
         <h2>Меню сайта</h2>
         <ul>
@@ -174,11 +126,13 @@
       </section>
     </main>
   </div>
+
   <nav class="tabbar">
     <button class="tabbar-btn active" data-tab="search"><svg viewBox="0 0 24 24"><path d="M21 20l-5.6-5.6a7 7 0 1 0-1.4 1.4L20 21zM10 16a6 6 0 1 1 0-12 6 6 0 0 1 0 12z"/></svg>Поиск</button>
     <button class="tabbar-btn" data-tab="categories"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8v-10h-8v10zm0-18v6h8V3h-8z"/></svg>Категории</button>
     <button class="tabbar-btn" data-tab="menu"><svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>Меню</button>
   </nav>
+
   <div id="product-modal" style="display:none;">
     <div class="modal-overlay" onclick="closeModal(event)">
       <div class="modal-content" onclick="event.stopPropagation();">
@@ -191,6 +145,8 @@
       </div>
     </div>
   </div>
+
+  <!-- JS: переключение вкладок и слайдов -->
   <script>
     const slides = document.querySelectorAll('.slide');
     const dots = document.querySelectorAll('.dot');
@@ -225,11 +181,15 @@
       });
     });
     tabbarBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        activateTab(btn.dataset.tab);
-      });
+      btn.addEventListener('click', () => activateTab(btn.dataset.tab));
     });
+
+    function closeModal() {
+      document.getElementById('product-modal').style.display = 'none';
+    }
   </script>
+
+  <!-- JS: Загрузка товаров из Google Таблицы -->
   <script>
     fetch("https://docs.google.com/spreadsheets/d/1uvZDDq7y3D73InwHYQ4vKqmhHXGtK9KjdRcVXzm5KAk/gviz/tq?tqx=out:json")
       .then(res => res.text())
@@ -247,6 +207,7 @@
           const name = cells[3]?.v || "";
           const price = cells[4]?.v || "";
           const desc = cells[5]?.v || "";
+
           const card = document.createElement("div");
           card.className = "product-card";
           card.innerHTML = `
