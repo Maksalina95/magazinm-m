@@ -1,6 +1,6 @@
 // category-loader.js
 
-const categoryUrl = ${baseUrl}/Sheet1;
+const categoryUrl = `${baseUrl}/Sheet1`;
 
 const catGallery = document.getElementById('category-gallery');
 if (catGallery) {
