@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="ru">
+<!DOCTYPE html>
+<html lang="ru">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -61,22 +62,100 @@
       .tabbar { display: flex; }
       main { padding: 10px 15px 20px 15px; }
     }
+    /* Карточка товара */
+    .product-card {
+      border: 1px solid #d6b7b7;
+      border-radius: 12px;
+      padding: 10px;
+      margin-bottom: 16px;
+      box-shadow: 1px 1px 5px rgba(166,59,59,0.2);
+      cursor: pointer;
+      transition: box-shadow 0.3s;
+      background: #fff;
+    }
+    .product-card:hover {
+      box-shadow: 2px 2px 12px rgba(166,59,59,0.4);
+    }
+    .product-card img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .product-card h3 {
+      margin: 0 0 6px 0;
+      font-size: 20px;
+      color: #a63b3b;
+    }
+    .product-card strong {
+      color: #b33a3a;
+      font-size: 18px;
+      display: block;
+      margin-bottom: 8px;
+    }
+    .card-buttons {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+    }
+    .card-buttons a {
+      background: #a63b3b;
+      color: #fff;
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-weight: bold;
+      flex: 1;
+      text-align: center;
+      transition: background-color 0.3s;
+    }
+    .card-buttons a:hover {
+      background: #ff5e5e;
+    }
+    /* Модальное окно */
     .modal-overlay {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.6);
       display: flex; justify-content: center; align-items: center;
-      z-index: 999;
+      z-index: 9999;
     }
     .modal-content {
       background: #fff; padding: 20px; border-radius: 12px;
-      max-width: 500px; width: 90%; position: relative;
+      max-width: 600px; width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
     }
     .modal-close {
       position: absolute; top: 10px; right: 10px;
-      background: none; border: none; font-size: 24px; cursor: pointer;
+      background: none; border: none; font-size: 28px; cursor: pointer;
+      color: #a63b3b;
+      font-weight: bold;
+    }
+    .modal-content img, .modal-content video {
+      max-width: 100%;
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+    .modal-content h3 {
+      margin-top: 0;
+      color: #a63b3b;
     }
     .modal-nav {
       display: flex; justify-content: space-between; margin-top: 10px;
+    }
+    .modal-nav button {
+      background: #a63b3b;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+    .modal-nav button:hover {
+      background: #ff5e5e;
     }
   </style>
 </head>
@@ -103,30 +182,36 @@
           <datalist id="autocompleteList"></datalist>
         </div>
         <div id="product-list" class="product-list"></div>
-      </section><section id="categories" class="tab">
-    <h2>Категории товаров</h2>
-    <div id="category-gallery"></div>
-  </section>
+      </section>
 
-  <section id="menu" class="tab">
-    <h2>Меню сайта</h2>
-    <ul>
-      <li><a href="favorites.html">⭐ Избранное</a></li>
-      <li><a href="delivery.html">🚚 Доставка</a></li>
-      <li><a href="contacts.html">📞 Контакты</a></li>
-      <li><a href="address.html">📍 Адрес</a></li>
-      <li><a href="reviews.html">🗣 Отзывы</a></li>
-      <li><a href="#" onclick="location.reload()">🔄 Обновить сайт</a></li>
-      <li><a href="terms.html">📜 Правила</a></li>
-    </ul>
-  </section>
-</main>
+      <section id="categories" class="tab">
+        <h2>Категории товаров</h2>
+        <div id="category-gallery"></div>
+      </section>
 
-  </div>  <nav class="tabbar">
+      <section id="menu" class="tab">
+        <h2>Меню сайта</h2>
+        <ul>
+          <li><a href="favorites.html">⭐ Избранное</a></li>
+          <li><a href="delivery.html">🚚 Доставка</a></li>
+          <li><a href="contacts.html">📞 Контакты</a></li>
+          <li><a href="address.html">📍 Адрес</a></li>
+          <li><a href="reviews.html">🗣 Отзывы</a></li>
+          <li><a href="#" onclick="location.reload()">🔄 Обновить сайт</a></li>
+          <li><a href="terms.html">📜 Правила</a></li>
+        </ul>
+      </section>
+    </main>
+  </div>
+
+  <nav class="tabbar">
     <button class="tabbar-btn active" data-tab="search">🔍<br>Поиск</button>
     <button class="tabbar-btn" data-tab="categories">📦<br>Категории</button>
     <button class="tabbar-btn" data-tab="menu">☰<br>Меню</button>
-  </nav>  <div id="product-modal" style="display:none;">
+  </nav>
+
+  <!-- Модальное окно -->
+  <div id="product-modal" style="display:none;">
     <div class="modal-overlay" onclick="closeModal(event)">
       <div class="modal-content" onclick="event.stopPropagation();">
         <button class="modal-close" onclick="closeModal()">&times;</button>
@@ -137,7 +222,10 @@
         </div>
       </div>
     </div>
-  </div>  <script>
+  </div>
+
+  <script>
+    // Слайдер
     const slides = document.querySelectorAll('.slide');
     const dots = document.querySelectorAll('.dot');
     let currentSlide = 0;
@@ -156,6 +244,7 @@
       showSlide(next);
     }, 5000);
 
+    // Вкладки меню
     const tabs = document.querySelectorAll('.tab');
     const menuLinks = document.querySelectorAll('.menu-link');
     const tabbarBtns = document.querySelectorAll('.tabbar-btn');
@@ -174,48 +263,134 @@
       btn.addEventListener('click', () => activateTab(btn.dataset.tab));
     });
 
-    function closeModal() {
+    function closeModal(event) {
+      if(event) event.stopPropagation();
       document.getElementById('product-modal').style.display = 'none';
     }
 
+    // Переменные для товаров и текущего открытого индекса
+    let products = [];
+    let currentIndex = 0;
+
+    // Отрисовка списка товаров
+    function renderProducts(list) {
+      const productList = document.getElementById("product-list");
+      productList.innerHTML = "";
+
+      list.forEach((row, index) => {
+        const name = row["название"] || "";
+        const description = row["описание"] || "";
+        const price = row["цена"] || "";
+        const photo = row["фото"] || "";
+        const video = row["видео"] || "";
+        const subcategory = row["подкатегория"] || "";
+        const category = row["категория"] || "";
+        const subsubcategory = row["подподкатегория"] || "";
+        const brand = row["бренд"] || "";
+        const country = row["страна"] || "";
+        const type = row["тип"] || "";
+        const categoryImage = row["картинка категории"] || "";
+
+        const card = document.createElement("div");
+        card.className = "product-card";
+        card.innerHTML = `
+          ${photo ? `<img src="${photo}" alt="${name}" loading="lazy">` : ""}
+          <h3>${name}</h3>
+          ${price ? `<strong>${price} ₽</strong>` : ""}
+          ${description ? `<p>${description}</p>` : ""}
+          ${brand ? `<p><b>бренд:</b> ${brand}</p>` : ""}
+          ${country ? `<p><b>страна:</b> ${country}</p>` : ""}
+          ${type ? `<p><b>тип:</b> ${type}</p>` : ""}
+          ${subcategory ? `<p><b>подкатегория:</b> ${subcategory}</p>` : ""}
+          ${subsubcategory ? `<p><b>подподкатегория:</b> ${subsubcategory}</p>` : ""}
+          ${categoryImage ? `<p><b>картинка категории:</b><br><img src="${categoryImage}" alt="Категория ${category}" style="max-width:100px; border-radius:8px; margin-top:5px;"></p>` : ""}
+          <div class="card-buttons">
+            <a href="https://wa.me/79376280080?text=Здравствуйте! Хочу заказать: ${encodeURIComponent(name)}" target="_blank" rel="noopener noreferrer">WhatsApp 1</a>
+            <a href="https://wa.me/89649626694?text=Здравствуйте! Хочу заказать: ${encodeURIComponent(name)}" target="_blank" rel="noopener noreferrer">WhatsApp 2</a>
+          </div>
+        `;
+
+        // Открыть модалку по клику на карточку
+        card.addEventListener('click', () => openModal(index));
+
+        productList.appendChild(card);
+      });
+    }
+
+    // Открытие модального окна с детальной информацией
+    function openModal(index) {
+      currentIndex = index;
+      const product = products[index];
+      if(!product) return;
+
+      const modalBody = document.getElementById('modal-body');
+      modalBody.innerHTML = '';
+
+      if(product["фото"]) {
+        modalBody.innerHTML += `<img src="${product["фото"]}" alt="${product["название"]}" loading="lazy">`;
+      }
+      if(product["видео"]) {
+        modalBody.innerHTML += `<video controls src="${product["видео"]}" style="margin-bottom:12px; max-width:100%; border-radius:8px;"></video>`;
+      }
+      modalBody.innerHTML += `<h3>${product["название"] || ''}</h3>`;
+      if(product["цена"]) modalBody.innerHTML += `<p><strong>Цена:</strong> ${product["цена"]} ₽</p>`;
+      if(product["описание"]) modalBody.innerHTML += `<p><strong>Описание:</strong> ${product["описание"]}</p>`;
+      if(product["бренд"]) modalBody.innerHTML += `<p><strong>Бренд:</strong> ${product["бренд"]}</p>`;
+      if(product["страна"]) modalBody.innerHTML += `<p><strong>Страна:</strong> ${product["страна"]}</p>`;
+      if(product["тип"]) modalBody.innerHTML += `<p><strong>Тип:</strong> ${product["тип"]}</p>`;
+      if(product["категория"]) modalBody.innerHTML += `<p><strong>Категория:</strong> ${product["категория"]}</p>`;
+      if(product["подкатегория"]) modalBody.innerHTML += `<p><strong>Подкатегория:</strong> ${product["подкатегория"]}</p>`;
+      if(product["подподкатегория"]) modalBody.innerHTML += `<p><strong>Под-подкатегория:</strong> ${product["подподкатегория"]}</p>`;
+      if(product["картинка категории"]) {
+        modalBody.innerHTML += <p><strong>Картинка категории:</strong><br><img src="${product["картинка категории"]}" alt="Категория" style="max-width:120px; border-radius:8px;"></p>;
+      }
+
+      document.getElementById('product-modal').style.display = 'flex';
+    }
+
+    // Кнопки навигации модалки
+    document.getElementById('prevProduct').addEventListener('click', () => {
+      currentIndex = (currentIndex - 1 + products.length) % products.length;
+      openModal(currentIndex);
+    });
+    document.getElementById('nextProduct').addEventListener('click', () => {
+      currentIndex = (currentIndex + 1) % products.length;
+      openModal(currentIndex);
+    });
+
+    // Загрузка данных с Google Таблицы
     fetch("https://opensheet.elk.sh/1gBcuPzWv_nH2i7sWyCaERVCjO-hLg8EcndPkEMlNqgw/Sheet1")
       .then(res => res.json())
       .then(data => {
-        const productList = document.getElementById("product-list");
-        productList.innerHTML = "";
-        data.forEach(row => {
-          const name = row["название"] || "";
-          const description = row["описание"] || "";
-          const price = row["цена"] || "";
-          const photo = row["фото"] || "";
-          const video = row["видео"] || "";
-          const subcategory = row["подкатегория"] || "";
-          const category = row["категория"] || "";
-          const subsubcategory = row["подподкатегория"] || "";
-          const brand = row["бренд"] || "";
-          const country = row["страна"] || "";
-          const type = row["тип"] || "";
-
-          const card = document.createElement("div");
-          card.className = "product-card";
-          card.innerHTML = `
-            ${photo ? <img src="${photo}" alt="${name}" loading="lazy"> : ""}
-            <h3>${name}</h3>
-            ${price ? `<strong>${price} ₽</strong>` : ""}
-            ${description ? `<p>${description}</p>` : ""}
-            ${brand ? `<p><b>Бренд:</b> ${brand}</p>` : ""}
-            ${country ? `<p><b>Страна:</b> ${country}</p>` : ""}
-            ${type ? `<p><b>Тип:</b> ${type}</p>` : ""}
-            ${subcategory ? `<p><b>Подкатегория:</b> ${subcategory}</p>` : ""}
-            ${subsubcategory ? `<p><b>Под-подкатегория:</b> ${subsubcategory}</p>` : ""}
-            ${video ? `<video controls src="${video}" width="100%"></video>` : ""}
-            <div class="card-buttons">
-              <a href="https://wa.me/79376280080?text=Здравствуйте! Хочу заказать: ${encodeURIComponent(name)}" target="_blank">WhatsApp 1</a>
-              <a href="https://wa.me/89649626694?text=Здравствуйте! Хочу заказать: ${encodeURIComponent(name)}" target="_blank">WhatsApp 2</a>
-            </div>
-          `;
-          productList.appendChild(card);
-        });
+        products = data.filter(item => item["название"] && item["фото"]); // фильтрация чтобы показывать только с названием и фото
+        renderProducts(products);
+        populateAutocomplete(products);
+      })
+      .catch(err => {
+        console.error('Ошибка загрузки данных:', err);
+        document.getElementById("product-list").innerHTML = "<p>Ошибка загрузки товаров. Попробуйте позже.</p>";
       });
-  </script></body>
+
+    // Поиск с автодополнением
+    const searchInput = document.getElementById('searchInput');
+    const autocompleteList = document.getElementById('autocompleteList');
+
+    function populateAutocomplete(list) {
+      autocompleteList.innerHTML = '';
+      const namesSet = new Set(list.map(p => p["название"]).filter(Boolean));
+      namesSet.forEach(name => {
+        const option = document.createElement('option');
+        option.value = name;
+        autocompleteList.appendChild(option);
+      });
+    }
+
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value.trim().toLowerCase();
+      const filtered = products.filter(p => p["название"].toLowerCase().includes(query));
+      renderProducts(filtered);
+    });
+
+  </script>
+</body>
 </html>
