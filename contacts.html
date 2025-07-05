@@ -12,13 +12,12 @@
       color: #5a2e2e;
       margin: 0;
       padding: 0;
-      min-height: 100vh;
-      display: flex;
     }
 
     .container {
       display: flex;
-      flex: 1;
+      min-height: 100vh;
+      flex-direction: row;
     }
 
     aside {
@@ -26,7 +25,6 @@
       background: #fff0f0;
       padding: 20px;
       box-shadow: 2px 0 6px rgba(0,0,0,0.1);
-      flex-shrink: 0;
     }
 
     aside h2 {
@@ -45,7 +43,7 @@
       border-radius: 6px;
     }
 
-    aside a:hover, aside a.active {
+    aside a:hover {
       background-color: #ffdede;
     }
 
@@ -59,13 +57,12 @@
       font-weight: 700;
       color: #a63b3b;
       text-align: center;
-      margin-bottom: 30px;
     }
 
     ul {
       list-style: none;
       padding: 0;
-      max-width: 500px;
+      max-width: 400px;
       margin: 0 auto 30px auto;
     }
 
@@ -89,59 +86,65 @@
       color: #7a2929;
     }
 
-    .delivery-button {
-      display: block;
-      width: fit-content;
-      margin: 30px auto 0;
-      background: #25D366;
-      color: white;
-      padding: 12px 20px;
-      border-radius: 8px;
+    /* 🌸 Мобильные плитки-меню наверху */
+    .mobile-top-menu {
+      display: none;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      background: #fff0f0;
+      padding: 10px;
+    }
+
+    .mobile-top-menu a {
+      flex: 0 0 auto;
+      padding: 10px 12px;
+      font-size: 18px;
       text-align: center;
+      background: #ffecec;
+      color: #a63b3b;
+      border-radius: 12px;
       text-decoration: none;
-      font-size: 16px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      transition: background 0.3s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      min-width: 44px;
     }
 
-    .delivery-button:hover {
-      background: #1da851;
+    .mobile-top-menu a.active {
+      background: #ffd2d2;
+      font-weight: bold;
     }
 
-    /* 📱 Мобильная адаптация */
     @media (max-width: 768px) {
-      body {
+      .container {
         flex-direction: column;
       }
 
-      .container {
-        flex-direction: row;
-        flex-wrap: nowrap;
-      }
-
       aside {
-        width: 200px;
-        min-height: 100vh;
-        overflow-y: auto;
-        position: relative;
+        display: none;
       }
 
       main {
-        padding: 15px;
+        padding: 10px;
       }
 
-      li {
-        font-size: 16px;
-      }
-
-      .delivery-button {
-        font-size: 15px;
-        padding: 10px 16px;
+      .mobile-top-menu {
+        display: flex;
       }
     }
   </style>
 </head>
 <body>
+
+  <!-- 🌸 Плитки-меню сверху (только на мобилке) -->
+  <nav class="mobile-top-menu">
+    <a href="index.html">🏠</a>
+    <a href="favorites.html">⭐</a>
+    <a href="delivery.html">🚚</a>
+    <a href="contacts.html" class="active">📞</a>
+    <a href="address.html">📍</a>
+    <a href="reviews.html">🗣</a>
+  </nav>
+
   <div class="container">
     <aside>
       <h2>Меню</h2>
@@ -156,17 +159,16 @@
     </aside>
 
     <main>
-      <h1>📞 Свяжитесь с нами</h1>
+      <h1>Контакты</h1>
       <ul>
         <li>WhatsApp: <a href="https://wa.me/79376280080" target="_blank">+7 937 628-00-80</a></li>
-        <li>WhatsApp (доставка): <a href="https://wa.me/89649626694" target="_blank">+7 964 962-66-94</a></li>
+        <li>WhatsApp: <a href="https://wa.me/89649626694" target="_blank">+7 964 962-66-94</a></li>
         <li>Telegram: <a href="https://t.me/internet_magazin_v_ingushetii" target="_blank">@internet_magazin_v_ingushetii</a></li>
         <li>Telegram: <a href="https://t.me/magazin_maksaliny" target="_blank">@magazin_maksaliny</a></li>
         <li>Instagram: <a href="https://instagram.com/posuda_i_tehnika_u_maksaliny" target="_blank">posuda_i_tehnika_u_maksaliny</a></li>
       </ul>
-
-      <a class="delivery-button" href="https://wa.me/89649626694" target="_blank">📦 Оформить доставку</a>
     </main>
   </div>
+
 </body>
 </html>
