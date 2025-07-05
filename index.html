@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="ru">
+<!DOCTYPE html><html lang="ru">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -89,7 +88,6 @@
       <a href="#" class="menu-link" data-tab="categories">📦 Категории</a>
       <a href="#" class="menu-link" data-tab="menu">☰ Меню</a>
     </aside>
-
     <main>
       <section id="search" class="tab active">
         <div class="slider-container">
@@ -105,35 +103,30 @@
           <datalist id="autocompleteList"></datalist>
         </div>
         <div id="product-list" class="product-list"></div>
-      </section>
+      </section><section id="categories" class="tab">
+    <h2>Категории товаров</h2>
+    <div id="category-gallery"></div>
+  </section>
 
-      <section id="categories" class="tab">
-        <h2>Категории товаров</h2>
-        <div id="category-gallery"></div>
-      </section>
+  <section id="menu" class="tab">
+    <h2>Меню сайта</h2>
+    <ul>
+      <li><a href="favorites.html">⭐ Избранное</a></li>
+      <li><a href="delivery.html">🚚 Доставка</a></li>
+      <li><a href="contacts.html">📞 Контакты</a></li>
+      <li><a href="address.html">📍 Адрес</a></li>
+      <li><a href="reviews.html">🗣 Отзывы</a></li>
+      <li><a href="#" onclick="location.reload()">🔄 Обновить сайт</a></li>
+      <li><a href="terms.html">📜 Правила</a></li>
+    </ul>
+  </section>
+</main>
 
-      <section id="menu" class="tab">
-        <h2>Меню сайта</h2>
-        <ul>
-          <li><a href="favorites.html">⭐ Избранное</a></li>
-          <li><a href="delivery.html">🚚 Доставка</a></li>
-          <li><a href="contacts.html">📞 Контакты</a></li>
-          <li><a href="address.html">📍 Адрес</a></li>
-          <li><a href="reviews.html">🗣 Отзывы</a></li>
-          <li><a href="#" onclick="location.reload()">🔄 Обновить сайт</a></li>
-          <li><a href="terms.html">📜 Правила</a></li>
-        </ul>
-      </section>
-    </main>
-  </div>
-
-  <nav class="tabbar">
-    <button class="tabbar-btn active" data-tab="search"><svg viewBox="0 0 24 24"><path d="M21 20l-5.6-5.6a7 7 0 1 0-1.4 1.4L20 21zM10 16a6 6 0 1 1 0-12 6 6 0 0 1 0 12z"/></svg>Поиск</button>
-    <button class="tabbar-btn" data-tab="categories"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8v-10h-8v10zm0-18v6h8V3h-8z"/></svg>Категории</button>
-    <button class="tabbar-btn" data-tab="menu"><svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>Меню</button>
-  </nav>
-
-  <div id="product-modal" style="display:none;">
+  </div>  <nav class="tabbar">
+    <button class="tabbar-btn active" data-tab="search">🔍<br>Поиск</button>
+    <button class="tabbar-btn" data-tab="categories">📦<br>Категории</button>
+    <button class="tabbar-btn" data-tab="menu">☰<br>Меню</button>
+  </nav>  <div id="product-modal" style="display:none;">
     <div class="modal-overlay" onclick="closeModal(event)">
       <div class="modal-content" onclick="event.stopPropagation();">
         <button class="modal-close" onclick="closeModal()">&times;</button>
@@ -144,10 +137,7 @@
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- JS: переключение вкладок и слайдов -->
-  <script>
+  </div>  <script>
     const slides = document.querySelectorAll('.slide');
     const dots = document.querySelectorAll('.dot');
     let currentSlide = 0;
@@ -187,34 +177,38 @@
     function closeModal() {
       document.getElementById('product-modal').style.display = 'none';
     }
-  </script>
 
-  <!-- JS: Загрузка товаров из Google Таблицы -->
-  <script>
-    fetch("https://docs.google.com/spreadsheets/d/1uvZDDq7y3D73InwHYQ4vKqmhHXGtK9KjdRcVXzm5KAk/gviz/tq?tqx=out:json")
-      .then(res => res.text())
+    fetch("https://opensheet.elk.sh/1gBcuPzWv_nH2i7sWyCaERVCjO-hLg8EcndPkEMlNqgw/Sheet1")
+      .then(res => res.json())
       .then(data => {
-        const json = JSON.parse(data.substring(47).slice(0, -2));
-        const rows = json.table.rows;
         const productList = document.getElementById("product-list");
         productList.innerHTML = "";
-        rows.forEach(row => {
-          const cells = row.c;
-          if (!cells || !cells[0] || !cells[3]) return;
-          const category = cells[0]?.v || "";
-          const subcategory = cells[1]?.v || "";
-          const photoUrl = cells[2]?.v || "";
-          const name = cells[3]?.v || "";
-          const price = cells[4]?.v || "";
-          const desc = cells[5]?.v || "";
+        data.forEach(row => {
+          const name = row["название"] || "";
+          const description = row["описание"] || "";
+          const price = row["цена"] || "";
+          const photo = row["фото"] || "";
+          const video = row["видео"] || "";
+          const subcategory = row["подкатегория"] || "";
+          const category = row["категория"] || "";
+          const subsubcategory = row["подподкатегория"] || "";
+          const brand = row["бренд"] || "";
+          const country = row["страна"] || "";
+          const type = row["тип"] || "";
 
           const card = document.createElement("div");
           card.className = "product-card";
           card.innerHTML = `
-            <img src="${photoUrl}" alt="${name}">
+            ${photo ? <img src="${photo}" alt="${name}" loading="lazy"> : ""}
             <h3>${name}</h3>
-            <strong>${price} ₽</strong>
-            ${desc ? `<p>${desc}</p>` : ""}
+            ${price ? `<strong>${price} ₽</strong>` : ""}
+            ${description ? `<p>${description}</p>` : ""}
+            ${brand ? `<p><b>Бренд:</b> ${brand}</p>` : ""}
+            ${country ? `<p><b>Страна:</b> ${country}</p>` : ""}
+            ${type ? `<p><b>Тип:</b> ${type}</p>` : ""}
+            ${subcategory ? `<p><b>Подкатегория:</b> ${subcategory}</p>` : ""}
+            ${subsubcategory ? `<p><b>Под-подкатегория:</b> ${subsubcategory}</p>` : ""}
+            ${video ? `<video controls src="${video}" width="100%"></video>` : ""}
             <div class="card-buttons">
               <a href="https://wa.me/79376280080?text=Здравствуйте! Хочу заказать: ${encodeURIComponent(name)}" target="_blank">WhatsApp 1</a>
               <a href="https://wa.me/89649626694?text=Здравствуйте! Хочу заказать: ${encodeURIComponent(name)}" target="_blank">WhatsApp 2</a>
@@ -223,6 +217,5 @@
           productList.appendChild(card);
         });
       });
-  </script>
-</body>
+  </script></body>
 </html>
