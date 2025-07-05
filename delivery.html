@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Доставка — Магазин Максолины</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7e9e9;
+      color: #5a2e2e;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      display: flex;
+      min-height: 100vh;
+      flex-direction: row;
+    }
+    aside {
+      width: 220px;
+      background: #fff0f0;
+      padding: 20px;
+      box-shadow: 2px 0 6px rgba(0,0,0,0.1);
+      box-sizing: border-box;
+    }
+    aside h2 {
+      font-size: 18px;
+      margin-top: 0;
+      color: #a63b3b;
+      margin-bottom: 20px;
+    }
+    aside a {
+      display: block;
+      margin: 10px 0;
+      color: #a63b3b;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 8px;
+      border-radius: 6px;
+      transition: background-color 0.3s ease;
+    }
+    aside a:hover {
+      background-color: #ffdede;
+    }
+    main {
+      flex: 1;
+      padding: 20px 30px;
+      box-sizing: border-box;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    h1 {
+      font-weight: 700;
+      color: #a63b3b;
+      margin-top: 0;
+    }
+    h2.section-title {
+      color: #8c2c2c;
+      margin-top: 30px;
+      margin-bottom: 15px;
+    }
+    .table-container {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-bottom: 30px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 300px;
+    }
+    table, th, td {
+      border: 1px solid #a06363;
+    }
+    th, td {
+      padding: 8px 12px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2dede;
+      color: #7a2a2a;
+    }
+    p {
+      line-height: 1.5;
+      font-size: 16px;
+      max-width: 700px;
+      margin-bottom: 25px;
+      color: #5a2e2e;
+    }
+    hr {
+      border: 1px solid #d3a1a1;
+      margin: 40px 0;
+    }
+
+    /* Кнопка WhatsApp */
+    .whatsapp-btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 20px;
+      background: #25D366;
+      color: white;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 16px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      transition: background 0.3s, transform 0.3s;
+    }
+    .whatsapp-btn:hover {
+      background: #1ebe5d;
+      transform: scale(1.05);
+    }
+
+    /* Адаптивность */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      aside {
+        width: 100%;
+        display: flex;
+        overflow-x: auto;
+        white-space: nowrap;
+        padding: 10px 15px;
+        box-shadow: none;
+      }
+      aside a {
+        flex: 1 0 auto;
+        margin: 0 8px;
+        text-align: center;
+      }
+      main {
+        padding: 15px 15px 30px;
+      }
+      header {
+        margin-bottom: 15px;
+      }
+      p {
+        font-size: 14px;
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <aside>
+      <h2>Меню</h2>
+      <a href="index.html">🏠 Главная</a>
+      <a href="favorites.html">⭐ Избранное</a>
+      <a href="delivery.html" class="active">🚚 Доставка</a>
+      <a href="contacts.html">📞 Контакты</a>
+      <a href="address.html">📍 Адрес</a>
+      <a href="reviews.html">🗣 Отзывы</a>
+      <a href="#" onclick="location.reload()">🔄 Обновить сайт</a>
+      <a href="terms.html">📜 Правила</a>
+    </aside>
+
+    <main>
+      <header>
+        <h1>Доставка</h1>
+      </header>
+
+      <h2 class="section-title">🚚 Курьерская доставка (Сунжа – до двери)</h2>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Населённый пункт</th>
+              <th>Стоимость</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Алиюрт</td><td>750 ₽</td></tr>
+            <tr><td>Алхасты</td><td>450 ₽</td></tr>
+            <tr><td>Галашки</td><td>700 ₽</td></tr>
+            <tr><td>Гамурзиево</td><td>500 ₽</td></tr>
+            <tr><td>Гази-Юрт</td><td>500 ₽</td></tr>
+            <tr><td>Долаково</td><td>700 ₽</td></tr>
+            <tr><td>Карабулак</td><td>400 ₽</td></tr>
+            <tr><td>Кантышево</td><td>650 ₽</td></tr>
+            <tr><td>Майское</td><td>650 ₽</td></tr>
+            <tr><td>Магас</td><td>650 ₽</td></tr>
+            <tr><td>Мужичи</td><td>850 ₽</td></tr>
+            <tr><td>Назрань</td><td>500 ₽</td></tr>
+            <tr><td>Насыр-корт</td><td>500 ₽</td></tr>
+            <tr><td>Нестеровск</td><td>350 ₽</td></tr>
+            <tr><td>Плиево</td><td>450 ₽</td></tr>
+            <tr><td>Сунжа</td><td>200 ₽</td></tr>
+            <tr><td>Сурхахи</td><td>750 ₽</td></tr>
+            <tr><td>Троицк</td><td>300 ₽</td></tr>
+            <tr><td>Экажево</td><td>600 ₽</td></tr>
+            <tr><td>Яндаре</td><td>450 ₽</td></tr>
+            <tr><td>Малгобек</td><td>700 ₽</td></tr>
+            <tr><td>Пседах</td><td>700 ₽</td></tr>
+            <tr><td>Инарки</td><td>700 ₽</td></tr>
+            <tr><td>1–2 микрорайоны</td><td>700 ₽</td></tr>
+            <tr><td>Сагопши</td><td>700 ₽</td></tr>
+            <tr><td>Нижние Ачалуки</td><td>700 ₽</td></tr>
+            <tr><td>Средние Ачалуки</td><td>700 ₽</td></tr>
+            <tr><td>Верхние Ачалуки</td><td>700 ₽</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <hr />
+
+      <h2 class="section-title">📦 Другие виды доставки</h2>
+      <p>Грузовая доставка по Ингушетии — от <strong>1500 ₽</strong> (зависит от объёма заказа)</p>
+      <p>Транспортные компании (СДЭК и др.) — при оплате наличными</p>
+      <p><strong>Почтой не отправляем.</strong></p>
+
+      <a href="https://wa.me/79649626694?text=Приветствую,%20хочу%20оформить%20доставку" target="_blank" class="whatsapp-btn">
+        📦 Оформить доставку в WhatsApp
+      </a>
+    </main>
+  </div>
+</body>
+</html>
