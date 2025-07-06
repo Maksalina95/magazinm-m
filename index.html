@@ -342,7 +342,7 @@
       if(product["подкатегория"]) modalBody.innerHTML += `<p><strong>Подкатегория:</strong> ${product["подкатегория"]}</p>`;
       if(product["подподкатегория"]) modalBody.innerHTML += `<p><strong>Под-подкатегория:</strong> ${product["подподкатегория"]}</p>`;
       if(product["картинка категории"]) {
-        modalBody.innerHTML += <p><strong>Картинка категории:</strong><br><img src="${product["картинка категории"]}" alt="Категория" style="max-width:120px; border-radius:8px;"></p>;
+        modalBody.innerHTML +=  `<p><strong>Картинка категории:</strong><br><img src="${product["картинка категории"]}" alt="Категория" style="max-width:120px; border-radius:8px;"></p>`;
       }
 
       document.getElementById('product-modal').style.display = 'flex';
